@@ -1,9 +1,11 @@
-name: Deploy Vireon
+name: Deploy Vireon to GitHub Pages
 
 on:
   push:
     branches:
       - main
+
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -11,50 +13,44 @@ permissions:
   id-token: write
 
 concurrency:
-  group: github-pages
-  cancel-in-progress: false
-
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  group: pages
+  cancel-in-progress: true
 
 jobs:
-  build:
-    name: Build Vireon
+  build-and-deploy:
+    name: Build and Deploy Vireon
     runs-on: ubuntu-latest
+
+    env:
+      VITE_BASE: /vireon3/
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v5
-        with:
-          node-version: 24
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
 
       - name: Install dependencies
-        run: npm install
+        run: bun install --frozen-lockfile
 
-      - name: Build Vite application
-        run: npm run build
+      - name: Build Vireon
+        run: bun run build
 
-      - name: Configure GitHub Pages
+      - name: Verify build output
+        run: |
+          test -f dist/index.html
+          test -d dist/assets
+          echo "Vireon build verified successfully"
+
+      - name: Setup GitHub Pages
         uses: actions/configure-pages@v5
 
-      - name: Upload dist folder
-        uses: actions/upload-pages-artifact@v4
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist
 
-  deploy:
-    name: Deploy Vireon
-    needs: build
-    runs-on: ubuntu-latest
-
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
-    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
