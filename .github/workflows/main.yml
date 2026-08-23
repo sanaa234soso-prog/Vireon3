@@ -1,4 +1,4 @@
-name: Deploy Vireon3
+name: Deploy Vireon
 
 on:
   push:
@@ -11,38 +11,43 @@ permissions:
   id-token: write
 
 concurrency:
-  group: "pages"
+  group: github-pages
   cancel-in-progress: false
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   build:
+    name: Build Vireon
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v5
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Setup Node.js 24
+        uses: actions/setup-node@v5
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
 
       - name: Install dependencies
         run: npm install
 
-      - name: Build Vite project
+      - name: Build React/Vite application
         run: npm run build
 
-      - name: Setup GitHub Pages
+      - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 
-      - name: Upload dist
-        uses: actions/upload-pages-artifact@v3
+      - name: Upload dist folder
+        uses: actions/upload-pages-artifact@v4
         with:
           path: ./dist
 
   deploy:
+    name: Deploy Vireon
     needs: build
     runs-on: ubuntu-latest
 
