@@ -49,7 +49,7 @@ import { Forbidden403 } from './components/Forbidden403';
 
 // Role Dashboards
 import { CreatorDashboard } from './components/Dashboards/CreatorDashboard';
-import { SellerDashboard } from './components/Seller/SellerDashboard';
+import { SellerDashboard } from './components/Dashboards/Seller/SellerDashboard';
 import { BrandDashboard } from './components/Dashboards/BrandDashboard';
 import { CustomerDashboard } from './components/Dashboards/CustomerDashboard';
 import { AdminPortal } from './components/Admin/AdminPortal';
