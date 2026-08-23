@@ -123,89 +123,85 @@ export default function App() {
   const [selectedItemForDetail, setSelectedItemForDetail] = useState<any | null>(null);
   const [selectedItemForCheckout, setSelectedItemForCheckout] = useState<any | null>(null);
 
-// Synchronize URL Path on load and popstate
-useEffect(() => {
-  const BASE_PATH = '/vireon3';
+  // Synchronize URL Path on load and popstate
+  useEffect(() => {
+    const handleLocationChange = () => {
+      const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
+      let path = window.location.pathname.toLowerCase();
 
-  const handleLocationChange = () => {
-    const pathname = window.location.pathname;
+      if (basePath && path.startsWith(basePath)) {
+        path = path.slice(basePath.length);
+      }
 
-    const path = (
-      pathname.startsWith(BASE_PATH)
-        ? pathname.slice(BASE_PATH.length)
-        : pathname
-    ).toLowerCase() || '/';
+      if (!path) {
+        path = '/';
+      }
 
-    if (path === '/admin') {
-      setActiveView('admin');
-    } else if (
-      path === '/seller/dashboard' ||
-      path === '/creator/dashboard' ||
-      path === '/seller'
-    ) {
-      setActiveView('seller');
-    } else if (
-      path === '/marketplace' ||
-      path === '/creators' ||
-      path === '/services' ||
-      path === '/campaigns' ||
-      path === '/jobs'
-    ) {
-      setActiveView('marketplace');
-    } else if (path === '/messages') {
-      setActiveView('messages');
-    } else if (path === '/dashboard') {
-      setActiveView('dashboard');
-    } else if (path === '/radar') {
-      setActiveView('radar');
-    } else {
-      setActiveView('home');
-    }
-  };
+      if (path === '/admin') {
+        setActiveView('admin');
+      } else if (
+        path === '/seller/dashboard' ||
+        path === '/creator/dashboard' ||
+        path === '/seller'
+      ) {
+        setActiveView('seller');
+      } else if (
+        path === '/marketplace' ||
+        path === '/creators' ||
+        path === '/services' ||
+        path === '/campaigns' ||
+        path === '/jobs'
+      ) {
+        setActiveView('marketplace');
+      } else if (path === '/messages') {
+        setActiveView('messages');
+      } else if (path === '/dashboard') {
+        setActiveView('dashboard');
+      } else if (path === '/radar') {
+        setActiveView('radar');
+      } else {
+        setActiveView('home');
+      }
+    };
 
-  handleLocationChange();
+    handleLocationChange();
 
-  window.addEventListener('popstate', handleLocationChange);
+    window.addEventListener('popstate', handleLocationChange);
 
-  return () => {
-    window.removeEventListener('popstate', handleLocationChange);
-  };
-}, []);
-    
-
-    
+    return () => {
+      window.removeEventListener('popstate', handleLocationChange);
+    };
+  }, []);
 
   const navigateTo = useCallback((view: string) => {
-  const BASE_PATH = '/vireon3';
+    setActiveView(view);
 
-  setActiveView(view);
+    const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
 
-  let path = '/';
+    let route = '/';
 
-  switch (view) {
-    case 'home':
-      path = '/';
-      break;
+    if (view === 'home') {
+      route = '/';
+    } else if (view === 'seller') {
+      route = '/seller/dashboard';
+    } else {
+      route = `/${view}`;
+    }
 
-    case 'seller':
-      path = '/seller/dashboard';
-      break;
+    const targetPath =
+      route === '/'
+        ? `${basePath}/`
+        : `${basePath}${route}`;
 
-    default:
-      path = `/${view}`;
-      break;
-  }
+    window.history.pushState({}, '', targetPath);
 
-  window.history.pushState(
-    {},
-    '',
-    `${BASE_PATH}${path}`
-  );
+    window.dispatchEvent(new PopStateEvent('popstate'));
 
-  window.scrollTo({
-    top: 0,
-    behavior: 'smooth',
-  });
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  }, []);
 
 
   // Verify active JWT session with backend
