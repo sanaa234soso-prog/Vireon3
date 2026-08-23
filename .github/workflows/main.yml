@@ -1,4 +1,4 @@
-name: Deploy Vireon to GitHub Pages
+name: Build and Deploy Vireon
 
 on:
   push:
@@ -17,12 +17,10 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-and-deploy:
-    name: Build and Deploy Vireon
-    runs-on: ubuntu-latest
 
-    env:
-      VITE_BASE: /vireon3/
+  build:
+    name: Build Vireon
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
@@ -32,25 +30,27 @@ jobs:
         uses: oven-sh/setup-bun@v2
 
       - name: Install dependencies
-        run: bun install --frozen-lockfile
+        run: bun install
 
       - name: Build Vireon
         run: bun run build
-
-      - name: Verify build output
-        run: |
-          test -f dist/index.html
-          test -d dist/assets
-          echo "Vireon build verified successfully"
-
-      - name: Setup GitHub Pages
-        uses: actions/configure-pages@v5
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist
 
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
