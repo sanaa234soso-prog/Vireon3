@@ -26,8 +26,8 @@ import {
   INITIAL_MESSAGES,
   INITIAL_AFFILIATE_LINKS,
   INITIAL_PPV_METRICS
-} from './lib/mockData';
-
+} from './
+./src/lib/mockData
 // Core UI Components (Design System)
 import { Navbar } from './components/Navbar';
 import { HomePage } from './components/HomePage';
