@@ -123,39 +123,90 @@ export default function App() {
   const [selectedItemForDetail, setSelectedItemForDetail] = useState<any | null>(null);
   const [selectedItemForCheckout, setSelectedItemForCheckout] = useState<any | null>(null);
 
-  // Synchronize URL Path on load and popstate
-  useEffect(() => {
-    const handleLocationChange = () => {
-      const path = window.location.pathname.toLowerCase();
-      if (path === '/admin') {
-        setActiveView('admin');
-      } else if (path === '/seller/dashboard' || path === '/creator/dashboard' || path === '/seller') {
-        setActiveView('seller');
-      } else if (path === '/marketplace' || path === '/creators' || path === '/services' || path === '/campaigns' || path === '/jobs') {
-        setActiveView('marketplace');
-      } else if (path === '/messages') {
-        setActiveView('messages');
-      } else if (path === '/dashboard') {
-        setActiveView('dashboard');
-      } else if (path === '/radar') {
-        setActiveView('radar');
-      }
-    };
+// Synchronize URL Path on load and popstate
+useEffect(() => {
+  const BASE_PATH = '/vireon3';
 
-    handleLocationChange();
-    window.addEventListener('popstate', handleLocationChange);
-    return () => window.removeEventListener('popstate', handleLocationChange);
-  }, []);
+  const handleLocationChange = () => {
+    const pathname = window.location.pathname;
+
+    const path = (
+      pathname.startsWith(BASE_PATH)
+        ? pathname.slice(BASE_PATH.length)
+        : pathname
+    ).toLowerCase() || '/';
+
+    if (path === '/admin') {
+      setActiveView('admin');
+    } else if (
+      path === '/seller/dashboard' ||
+      path === '/creator/dashboard' ||
+      path === '/seller'
+    ) {
+      setActiveView('seller');
+    } else if (
+      path === '/marketplace' ||
+      path === '/creators' ||
+      path === '/services' ||
+      path === '/campaigns' ||
+      path === '/jobs'
+    ) {
+      setActiveView('marketplace');
+    } else if (path === '/messages') {
+      setActiveView('messages');
+    } else if (path === '/dashboard') {
+      setActiveView('dashboard');
+    } else if (path === '/radar') {
+      setActiveView('radar');
+    } else {
+      setActiveView('home');
+    }
+  };
+
+  handleLocationChange();
+
+  window.addEventListener('popstate', handleLocationChange);
+
+  return () => {
+    window.removeEventListener('popstate', handleLocationChange);
+  };
+}, []);
+    
+
+    
 
   const navigateTo = useCallback((view: string) => {
-    setActiveView(view);
-    let path = '/';
-    if (view === 'home') path = '/';
-    else if (view === 'seller') path = '/seller/dashboard';
-    else path = `/${view}`;
-    window.history.pushState({}, '', path);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, []);
+  const BASE_PATH = '/vireon3';
+
+  setActiveView(view);
+
+  let path = '/';
+
+  switch (view) {
+    case 'home':
+      path = '/';
+      break;
+
+    case 'seller':
+      path = '/seller/dashboard';
+      break;
+
+    default:
+      path = `/${view}`;
+      break;
+  }
+
+  window.history.pushState(
+    {},
+    '',
+    `${BASE_PATH}${path}`
+  );
+
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth',
+  });
+
 
   // Verify active JWT session with backend
   useEffect(() => {
