@@ -471,3 +471,4 @@ export const Navbar: React.FC<NavbarProps> = ({
     Sign in / Create account
   </span>
 </button>
+);
