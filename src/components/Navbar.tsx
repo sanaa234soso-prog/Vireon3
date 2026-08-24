@@ -454,21 +454,27 @@ export const Navbar: React.FC<NavbarProps> = ({
                   );
                 })()}
               </div>
-            ) : (
+                        ) : (
               /* Unauthenticated: Sign In Button */
               <button
-  onClick={onOpenAuthModal}
-  className="flex items-center justify-center gap-1.5 px-2.5 sm:px-3.5 py-2 sm:py-1.5 min-h-9 rounded-lg sm:rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-[11px] sm:text-xs font-bold shadow-md shadow-purple-900/40 transition-all active:scale-95 whitespace-nowrap"
-  title="Sign in / Create account"
->
-  <LogIn className="w-4 h-4 shrink-0" />
+                onClick={onOpenAuthModal}
+                className="flex items-center justify-center gap-1.5 px-2.5 sm:px-3.5 py-2 sm:py-1.5 min-h-9 rounded-lg sm:rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-[11px] sm:text-xs font-bold shadow-md shadow-purple-900/40 transition-all active:scale-95 whitespace-nowrap"
+                title="Sign in / Create account"
+              >
+                <LogIn className="w-4 h-4 shrink-0" />
 
-  <span className="sm:hidden">
-    Sign in
-  </span>
+                <span className="sm:hidden">
+                  Sign in
+                </span>
 
-  <span className="hidden sm:inline">
-    Sign in / Create account
-  </span>
-</button>
-);
+                <span className="hidden sm:inline">
+                  Sign in / Create account
+                </span>
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    </header>
+  );
+};
