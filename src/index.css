@@ -63,7 +63,7 @@
   }
 }
 
-/* Smooth custom scrollbars */
+/* Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -93,9 +93,13 @@
     max-width: 100%;
     overflow-x: hidden;
   }
+
+  button {
+    max-width: 100%;
+  }
 }
 
-/* iPad / Tablet */
+/* Tablet / iPad */
 @media (min-width: 641px) and (max-width: 1024px) {
   body,
   #root {
